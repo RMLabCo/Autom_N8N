@@ -1,0 +1,2172 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=memory_{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+      },
+      "id": "29e3f7be-21a6-476d-be20-cddd38fbb6c9",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [
+        1264,
+        1184
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "db4961ad-1323-4d4e-9f0c-503846229638",
+      "name": "Extract from PDF",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        432,
+        1632
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "id": "c99f55f1-3328-4692-afa1-6e3e012b14d8",
+      "name": "Extract from XLS",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        368,
+        1936
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "id": "ac4f3d70-7a24-49f4-81e4-7923b2d217ea",
+      "name": "Extract from XLSX",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        368,
+        2096
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "72ae0d20-616a-4a65-9b14-53bf53656091",
+              "name": "data",
+              "type": "string",
+              "value": "={{ $json }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "72080cd5-af14-4318-ac51-0fe0a7763d46",
+      "name": "Map JSON",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        608,
+        1856
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "48af2dcc-4ce9-45fc-abfc-54f803930092",
+              "name": "text",
+              "type": "string",
+              "value": "=User image description: {{ $json.content.parts[0].text }}\n\nUser image caption: {{ $('Route Types').item.json.messages[0].image.caption }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7b39bf50-55a3-4653-8b44-9c22ea3f90f1",
+      "name": "Map image prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        128,
+        1184
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38aec976-a32c-4b0e-85f4-c90adc16abc9",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $json.messages[0].text.body }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1b6d1668-7ab8-4a3c-8986-0e6bc4e39ab1",
+      "name": "Map text prompt",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -512,
+        592
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "2fc5c912-629b-4cbe-b5e3-7e3f0651c628",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "text"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "26a3d85c-0815-48ff-85ce-713129a1107c",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "audio"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "840b95b8-6559-4fb7-b32c-651451d6d0d2",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "image"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "3e7a07f9-b785-450c-8c68-f6b276838503",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "document"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Document"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "714e4ded-663e-4047-b917-4dc38d4fe961",
+      "name": "Route Types",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -864,
+        1120
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "677680658761861",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "=The File type you provided is unsupported.",
+        "additionalFields": {}
+      },
+      "id": "d7461907-c280-47a9-ab5e-c3a5e8534691",
+      "name": "Send Unsupported Response",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        368,
+        2256
+      ],
+      "webhookId": "017d267f-4897-4726-bf03-304ef10352bf",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "3h25bO8WuUxaFZUo",
+          "name": "WhatsApp account - Transcorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "text": "- **Imágenes:** Yo soy capaz de \"ver\" imágenes porque el sistema me envía una descripción textual detallada de lo que contienen.\n  - Si la descripción es de un **comprobante de pago**: Agradece, confirma los datos visibles (fecha, monto) y diles que lo pasas a administración.\n - Operas en Colombia, la moneda funcional son pesos (COP).\n - Confirmar si la transacción fue exitosa o denegada.\n - Confirmar si el número del producto destino es el de la empresa ",
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -96,
+        1184
+      ],
+      "id": "eab9b6e0-ebbb-4e45-9017-ac6f1433fdf0",
+      "name": "Analyze an image",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "1w5RQoIyqj7CIG97",
+          "name": "Gemini - Transcorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text || $json.content.parts[0].text }}",
+        "options": {
+          "systemMessage": "Eres \"Valle IA\", el asistente virtual inteligente de Transcorvalle (Transportes Corazón del Valle S.A.S).\nTu tono es amable, corporativo, cercano y extremadamente eficiente.\n\n### INSTRUCCIÓN IMPORTANTE (USO DE INFORMACIÓN):\nTienes acceso a una herramienta/base de conocimiento llamada “Servicios transcorvalle”, antes de responder asegúrate de buscar información en la base.\n**ANTES DE RESPONDER, CONSULTA SIEMPRE ESTA INFORMACIÓN.**\n- No inventes precios ni servicios que no estén en el documento.\n- Si no encuentras la respuesta, ofrece contactar a un humano.\n\n### REGLAS DE FORMATO Y ESTILO (UX):\nEl usuario lee desde un celular. Tu prioridad es la LECTURABILIDAD.\n1.  **CERO MUROS DE TEXTO:** Tus respuestas no deben superar los 3 párrafos cortos por turno (salvo que sea estrictamente necesario).\n2.  **USO DE VIÑETAS:** Usa listas (bullets) para enumerar servicios o características.\n3.  **LIMPIEZA VISUAL:** No abuses de las negritas ni asteriscos. Usa emojis al inicio de las frases para dar estructura (ej: 📍, 🚌, 🕒) en lugar de formateo complejo.\n4.  **TONO:** Profesional pero cálido.\n\n### REGLAS DE ORO (INQUEBRANTABLES):\n1.  **NO DAR PRECIOS:** Nunca calcules ni estimes tarifas.\n2.  **DERIVACIÓN:** Para cerrar ventas o contratos, refiere al Gerente Comercial Juan González (+57 320 665 8537).\n3.  **IMÁGENES:** Si envían comprobantes, confirma los datos legibles y avisa que se remite a administración.\n\n---\n\n### LUJO DE CONVERSACIÓN\n\n#### 1. SALUDO Y DIAGNÓSTICO\nSaluda y pregunta brevemente: \"¿En qué te puedo apoyar hoy? (Cotización de viaje 🚌 o Información general ℹ️)\".\n\n#### 2. FASE DE INFORMACIÓN GENERAL\nSi preguntan por servicios, horarios o flota, busca en `Servicios transcorvalle` y responde **usando bullets**.\n*Ejemplo de respuesta ideal:*\n\"Ofrecemos varias modalidades de transporte:\n• **Corporativo o empresarial:** Transporte para empresas y/o sus colaboradores.\n• **Escolar:** Servicio especializado para instituciones educativas, incluye transporte para estudiantes, profesores y personal administrativo. Si recibes palabras como “escolar”, “escuela”, “colegio”, “universidad” debes buscar en el tool `Servicios transcorvalle` servicios de “Transporte Escolar”\n• **Turismo:** Viajes nacionales y regionales para familiares, agencias de turismo o grupo de personas.\n• **Ejecutivo:** Traslados VIP privados para personas que requieren realizar viajes de trabajo, salud y/o diligencias personales.\n¿Cuál te interesa?\"\n\n#### 3. FASE DE COTIZACIÓN (Ventas de Pasajeros)\nSi el cliente pregunta por los servicios de transporte o quiere cotizar un viaje o servicio, DEBES recolectar la información en dos bloques. No pidas todo de golpe.\n\n**PASO A: (Básico)**\nPide estos datos primero:\n1.  Número de pasajeros.\n2.  Origen y Destino.\n3.  Fecha y Horarios del viaje.\n4.  ¿Es solo ida o ida y regreso?\n\nRegla: Si el cliente no brinda la fecha y horario del viaje no insistas. Es posible que el cliente sólo quiera una cotización.\n\n\n### REGLA DE CIERRE RÁPIDO (PRIORIDAD MÁXIMA):\nSi el cliente responde \"no sé la fecha\", \"aún no sabemos\", o da datos parciales, **NO VUELVAS A PREGUNTAR**.\nAsume que es una cotización abierta y continua obteniendo la demás información.\n\n\n#### 4. TIEMPO DE VIAJE.\nSi el cliente pregunta por el tiempo estimado de viaje, puedes revisar con la aplicación de google maps el tiempo estimado en vehiculo. Indicando siempre, que dependerá de la hora de salida y llegada, el día, fin de semana. Indicar también que es un tiempo estimado.\n\n\n**PASO B: (Detalles y Condicionales)**\nUna vez tengas lo anterior, pregunta los detalles finos.\n* **Preguntas generales:** ¿Hay paradas/desvíos? ¿Qué tipo de viaje es (Empresarial, Académico, Particular)?\n* **SI ES ZONA RURAL/FINCA:** Pide la ubicación exacta en Google Maps.\n* **SI HAY NIÑOS:** Aclara: \"Por norma de tránsito, todo niño mayor de 3 años ocupa puesto (igual que en los aviones)\".\n\n* **SI ES AEROPUERTO:**\n    * Pregunta: ¿A cuál aeropuerto?\n    * Pregunta: ¿Cuántas maletas llevan? (Bodega 10-23kg o mano).\n    * **Lógica de Espera:** Pregunta si van a DESPEDIR o RECOGER a alguien. Si es así, aclara que el conductor deberá esperar para retornarlos.\n* **DISPONIBILIDAD:** Pregunta si requieren el vehículo disponible en el sitio para traslados internos o si el conductor puede retirarse y volver.\n\n\n **PASA INMEDIATAMENTE AL PASO C**.\nLuego de obtener todos los datos Debes responder SIEMPRE con este script exacto:\n\"¡Entendido! 👌 Con esa información base es suficiente.\nYa le he pasado tus datos a nuestro Gerente Comercial, Juan González (+57 320 665 8537), quien te contactará en breve para ayudarte a definir las fechas y darte el mejor precio. ¡Gracias por escribirnos! 🚍\"\n\n**PASO C: CIERRE**\nUna vez tengas los datos del paso a y b y c,  Debes responder SIEMPRE con este script exacto::\n\"¡Perfecto! ✅ Tengo toda la información. En breve nuestro Gerente Comercial, Juan González, te contactará para detallarte el costo del viaje. Si deseas comunicarte de manera inmediata puedes hacerlo en el número +57 320 665 8537."
+        }
+      },
+      "id": "3f89ef84-a3ca-464b-b295-fa6db7a9cf1b",
+      "name": "Conocimiento_BD",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        1168,
+        1008
+      ],
+      "typeVersion": 1.9,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0",
+          "mode": "list",
+          "cachedResultName": "Log Chatbot Trancorvalle",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "BD_Conversaciones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $now.setZone('America/Bogota').format('yyyy-MM-dd HH:mm:ss') }}",
+            "WhatsApp ID": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "Tipo": "={{ $('WhatsApp Trigger').item.json.messages[0].type }}",
+            "Mensaje/Transcripción": "={{\n$('Map text prompt').isExecuted ? $('Map text prompt').item.json.text :\n$('Map image prompt').isExecuted ? $('Map image prompt').item.json.text :\n$('Prompt docs').isExecuted ? $('Prompt docs').item.json.text :\n$('Map text audio').isExecuted ? $('Map text audio').item.json.text :\n\"Sin contenido detectable\"\n}}",
+            "Respuesta IA": "={{ $json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "WhatsApp ID",
+              "displayName": "WhatsApp ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tipo",
+              "displayName": "Tipo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mensaje/Transcripción",
+              "displayName": "Mensaje/Transcripción",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link a Drive",
+              "displayName": "Link a Drive",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Respuesta IA",
+              "displayName": "Respuesta IA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1536,
+        1008
+      ],
+      "id": "3053a7a4-d6f2-45ab-92af-e25caac70016",
+      "name": "Registro_conversacion",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ev9yj4hLTVffsiRE",
+          "name": "Google Sheets - Trancorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "1f6b1ccd-ba0d-4263-ba36-012e70429d81",
+              "leftValue": "={{ $json['Respuesta IA'] }}",
+              "rightValue": "Gerente Comercial",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "payment_receipt",
+              "leftValue": "={{ $json['Respuesta IA'] }}",
+              "rightValue": "comprobante",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "payment_transfer",
+              "leftValue": "={{ $json['Respuesta IA'] }}",
+              "rightValue": "transferencia",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "payment_admin",
+              "leftValue": "={{ $json['Respuesta IA'] }}",
+              "rightValue": "administración",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1728,
+        1008
+      ],
+      "id": "71c77cbe-6d8c-4312-99ae-a61ff0a594e7",
+      "name": "Detectar venta"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "926447947229519",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json[\"Respuesta IA\"] }}",
+        "additionalFields": {}
+      },
+      "id": "dc8dcae6-96ae-4932-b1dc-36df8b197900",
+      "name": "Respuesta cliente",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        2272,
+        1280
+      ],
+      "webhookId": "23834751-5066-48ba-8e19-549680df2b27",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "JF98sqO09RtsCFTm",
+          "name": "WhatsApp_Transcorvalle_Salida"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "=926447947229519",
+        "recipientPhoneNumber": "=573166572098",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "id": "7246d2c5-e0fb-44cf-b009-537812dcefb9",
+      "name": "Alerta comercial",
+      "type": "n8n-nodes-base.whatsApp",
+      "position": [
+        2416,
+        880
+      ],
+      "webhookId": "23834751-5066-48ba-8e19-549680df2b27",
+      "typeVersion": 1,
+      "credentials": {
+        "whatsAppApi": {
+          "id": "JF98sqO09RtsCFTm",
+          "name": "WhatsApp_Transcorvalle_Salida"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "c432e31c-d74c-4c76-af19-3951f6fd448c",
+      "name": "Descargar audio",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -288,
+        800
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ZY6oLdOM4BpF24sE",
+          "name": "Header Auth account_Tramscorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        800
+      ],
+      "id": "0d540052-7557-4ef2-81cc-d60dfb02cf8b",
+      "name": "Transcribir audio",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "1w5RQoIyqj7CIG97",
+          "name": "Gemini - Transcorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Usamos $input.all() para tomar los datos del nodo inmediatamente anterior\n// (en este caso \"Descargar archivo\") sin importar cómo se llame.\nlet requests = $input.all();\n\nrequests.forEach((request) => {\n  // Aseguramos que exista json y mime_type para evitar errores\n  let mime_type = request.json ? request.json.mime_type : null;\n\n  if (\n    mime_type === \"text/calendar\" || \n    mime_type === \"application/ics\" || \n    mime_type === \"text/x-calendar\"\n  ) {\n    request.json.mime_type = \"mapped/calendar\";\n  }\n\n  if (\n    mime_type === \"application/xml\" || \n    mime_type === \"text/xml\") {\n    request.json.mime_type = \"mapped/xml\";\n  }\n\n  // ELIMINADO: La referencia a $('Otros documentos') también causará error\n  // porque ese nodo no existe en tu JSON actual. \n  // Si no hay mime_type, asignamos uno genérico para que no falle.\n  if (!mime_type) {\n    request.json.mime_type = \"application/octet-stream\"; \n  }\n});\n\nreturn requests;"
+      },
+      "id": "046a2026-d554-4d88-b6a0-9d71cfe81f9e",
+      "name": "Tipo documento",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -160,
+        1616
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "14e23243-cd44-4cb1-99bd-9e6905d511ad",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "text/csv"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "CSV"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "6d7616c5-6bdd-47b7-923e-639491d15a4e",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "text/html"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "HTML"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "a2174e02-378a-41ff-b269-61f4fc3f1de9",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "=mapped/calendar"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Calendar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "f3b406d7-362d-473e-8edd-c3e5f2d9c44c",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "text/rtf"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "RTF"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "64dd4658-54e7-4453-adbc-7067dffcd555",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "text/plain"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "TXT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "7540a3ab-b48e-4bec-94e9-a5dfc3d65a4c",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "mapped/xml"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "XML"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "88b618fd-9a88-491e-91dd-c5fc9efa36e3",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "application/pdf"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "PDF"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "9c4d90aa-b4ea-4a63-b15e-666899c8360e",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "application/json"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "JSON"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "9baa7c88-3950-4099-8498-99a4640b95e7",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "application/vnd.ms-excel"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "XLS"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "b83e540c-ba1e-42d0-ac83-f675e25e6aea",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "XLSX"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "ea3be820-2ead-4ec2-b292-42d3c7804b55",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.mime_type }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "ELSE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8748bef9-b492-4e27-982c-42a725436f61",
+      "name": "Filtro tipo documento",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        48,
+        1472
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2432,
+        1088
+      ],
+      "id": "e2c02a8f-ba3b-4a13-af16-b6ee3c37c588",
+      "name": "WhatsApp Trigger",
+      "webhookId": "df439eec-b7ea-4682-add7-e47bd1f86a93",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "5ELMIE45axOUIF3O",
+          "name": "WhatsApp OAuth account - Trasncorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1yCey1OAYNYgcR2TmmYRLrq9zMnKHCOR26RkcpJrubnA/edit?tab=t.0"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        1216
+      ],
+      "id": "dad1ba2a-940d-4b51-a280-7776956bff75",
+      "name": "Servicios transcorvalle",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "nOeQHsNrXBl7Wyqd",
+          "name": "Google Docs_Transcorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].audio.id}}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -512,
+        800
+      ],
+      "id": "249f1b90-1f4d-4fba-9e7d-9ec19eec2123",
+      "name": "Descargar_audio",
+      "webhookId": "a2525ed6-6929-4852-8bed-78e42ddf1204",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "3h25bO8WuUxaFZUo",
+          "name": "WhatsApp account - Transcorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].image.id}}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -528,
+        1184
+      ],
+      "id": "74e3fa6e-2742-469d-b886-daf53d38c904",
+      "name": "Descargar_imagen",
+      "webhookId": "a2525ed6-6929-4852-8bed-78e42ddf1204",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "3h25bO8WuUxaFZUo",
+          "name": "WhatsApp account - Transcorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "media",
+        "operation": "mediaUrlGet",
+        "mediaGetId": "={{ $json.messages[0].document.id}}"
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -544,
+        1616
+      ],
+      "id": "3fb3a934-7183-4cf5-bd9a-76206c9c9699",
+      "name": "Descargar_documento",
+      "webhookId": "a2525ed6-6929-4852-8bed-78e42ddf1204",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "3h25bO8WuUxaFZUo",
+          "name": "WhatsApp account - Transcorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "5990a05b-f8e0-49b4-b91c-57431f82634d",
+      "name": "Descargar img",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -320,
+        1184
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ZY6oLdOM4BpF24sE",
+          "name": "Header Auth account_Tramscorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "9a3f4a32-20bf-42e6-9839-b39cef6b8de1",
+      "name": "Descargar archivo",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -352,
+        1616
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ZY6oLdOM4BpF24sE",
+          "name": "Header Auth account_Tramscorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "475ea424-3fa7-464b-8a95-a72f8e67895e",
+              "name": "text",
+              "value": "={{ $json.text || $json.data || JSON.stringify($json) }}",
+              "type": "string"
+            },
+            {
+              "id": "64a0d2cc-b7d5-49c3-9749-a983b850ccd8",
+              "name": "Caption text",
+              "value": "={{ $('WhatsApp Trigger').item.json.messages[0].document.caption || \"Sin descripción\" }}",
+              "type": "string"
+            },
+            {
+              "id": "acea526d-8c7e-43da-bd9c-53e54d97787a",
+              "name": "MimeType",
+              "value": "={{ $('Tipo documento').item.json.mime_type }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        752,
+        1184
+      ],
+      "id": "675edb62-5e58-4828-914b-bfc98cc9de85",
+      "name": "Prompt docs"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        1328
+      ],
+      "id": "abf53390-e4e0-4f46-ab60-6685da959d60",
+      "name": "IA Respuesta",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "1w5RQoIyqj7CIG97",
+          "name": "Gemini - Transcorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "38aec976-a32c-4b0e-85f4-c90adc16abc9",
+              "name": "text",
+              "type": "string",
+              "value": "={{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "924a63a2-bebe-482e-a6d5-1e2806cfb138",
+      "name": "Map text audio",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        160,
+        800
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        1072
+      ],
+      "id": "5292edbb-c9be-4576-9b91-ba04f1f5dfd8",
+      "name": "IA Respuesta1",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "1w5RQoIyqj7CIG97",
+          "name": "Gemini - Transcorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generar resumen",
+        "options": {
+          "systemMessage": "=Actúa como un asistente comercial experto. Analiza la siguiente interacción y genera un resumen ejecutivo para el Gerente de Ventas.\n\nDATOS DEL CLIENTE:\n- Nombre: {{ $('WhatsApp Trigger').item.json.contacts[0].profile.name }}\n- Teléfono: {{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\n\nSOLICITUD DEL CLIENTE (Contexto):\nMENSAJE DEL CLIENTE: {{ $('Registro_conversacion').item.json[\"Mensaje/Transcripción\"] }}\nRESPUESTA DEL BOT: {{ $('Conocimiento_BD').item.json.output }}\n\n### INSTRUCCIONES LOGICAS:\n1. **SI DETECTAS UN PAGO O COMPROBANTE:**\n   Usa este formato:\n   *NUEVO SOPORTE DE PAGO* 💸\n   👤 *Cliente:* [Nombre]\n   📱 *Link:* https://wa.me/[Teléfono]\n   📋 *Detalle:* [Monto si es visible, fecha, o simplemente \"Cliente envió comprobante\"]\n   💡 *Acción:* Validar ingreso en banco.\n\n2. **SI ES UNA CONSULTA DE VENTA:**\n   Usa este formato:\n   *NUEVA OPORTUNIDAD DE VENTA* 🚍\n   👤 *Cliente:* [Nombre]\n   📱 *Link:* https://wa.me/[Teléfono]\n   📋 *Resumen:* [Resume en 1 frase: Origen, Destino, Fecha, Pasajeros]\n   💡 *Acción:* Contactar para cotización final.\n\n3. **SI NO HAY DATOS CLAROS:**\n   \"Cliente solicitó atención del Gerente Comercial sin dar detalle del servicio\""
+        }
+      },
+      "id": "30a49d36-8149-4716-a19c-8c501b0d05de",
+      "name": "Generar Resumen Venta",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        2080,
+        880
+      ],
+      "typeVersion": 1.9,
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messages[0].type }}",
+                    "rightValue": "text",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "02f24bb7-ad09-40b4-a5cd-f2ac51792da0"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -2224,
+        1072
+      ],
+      "id": "e3ec2125-6771-4654-938b-309dc89105dc",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0",
+          "mode": "list",
+          "cachedResultName": "Log Chatbot Trancorvalle",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "BD_Conversaciones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $now.setZone('America/Bogota').format('yyyy-MM-dd HH:mm:ss') }}",
+            "WhatsApp ID": "={{ $json.messages[0].from }}",
+            "Tipo": "={{ $json.messages[0].type }}",
+            "Mensaje/Transcripción": "={{ $json.messages[0].text.body || $json.text || $json[\"Caption text\"] || \"Media without description\" }}",
+            "Procesado": "PENDIENTE"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "WhatsApp ID",
+              "displayName": "WhatsApp ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tipo",
+              "displayName": "Tipo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mensaje/Transcripción",
+              "displayName": "Mensaje/Transcripción",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link a Drive",
+              "displayName": "Link a Drive",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Respuesta IA",
+              "displayName": "Respuesta IA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Procesado",
+              "displayName": "Procesado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2080,
+        864
+      ],
+      "id": "2e6cd7be-e175-4cd2-a164-c32ef9ca09fa",
+      "name": "Guardar Msg Parcial",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ev9yj4hLTVffsiRE",
+          "name": "Google Sheets - Trancorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0",
+          "mode": "list",
+          "cachedResultName": "Log Chatbot Trancorvalle",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "=36143456",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Phone": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+            "Last_Execution_ID": "={{ $execution.id }}",
+            "Timestamp": "={{ $now }}"
+          },
+          "matchingColumns": [
+            "Phone"
+          ],
+          "schema": [
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last_Execution_ID",
+              "displayName": "Last_Execution_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Mensajes_Pendientes",
+              "displayName": "Mensajes_Pendientes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1920,
+        864
+      ],
+      "id": "aaea1c2f-4618-4a8e-a35e-b5dbc5fef693",
+      "name": "Marcar Semáforo",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ev9yj4hLTVffsiRE",
+          "name": "Google Sheets - Trancorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0",
+          "mode": "list",
+          "cachedResultName": "Log Chatbot Trancorvalle",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "=36143456",
+          "mode": "id"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone",
+              "lookupValue": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1616,
+        864
+      ],
+      "id": "774fafc0-fe82-43d2-97bc-b37a569983f6",
+      "name": "Verificar Semáforo",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ev9yj4hLTVffsiRE",
+          "name": "Google Sheets - Trancorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "1",
+              "leftValue": "={{ $json.Last_Execution_ID.toString() }}",
+              "rightValue": "={{ $execution.id.toString() }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1440,
+        864
+      ],
+      "id": "08b43652-7541-446f-b2af-b84150d01edc",
+      "name": "Es ultimo mensaje?"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0",
+          "mode": "list",
+          "cachedResultName": "Log Chatbot Trancorvalle",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "=0",
+          "mode": "id"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "WhatsApp ID",
+              "lookupValue": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}"
+            },
+            {
+              "lookupColumn": "Procesado",
+              "lookupValue": "PENDIENTE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1184,
+        848
+      ],
+      "id": "ce9eaa8b-ff30-4fac-a332-4be37af2d30d",
+      "name": "Recuperar Msjs",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ev9yj4hLTVffsiRE",
+          "name": "Google Sheets - Trancorvalle"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Obtener todas las filas\nconst rows = $input.all();\n\n// 2. FILTRO PROCESADO (Aggregated Logic)\nconst userRows = rows.filter(item => {\n  const processed = item.json[\"Procesado\"];\n  // Aceptamos PENDIENTE o FALSE\n  return processed === \"PENDIENTE\" || processed === \"FALSE\" || processed === false;\n});\n\nif (userRows.length === 0) return [];\n\n// 3. Tomamos los últimos 15 mensajes\nconst recentUserMsgs = userRows.slice(-15);\n\n// 4. Invertimos (NUEVO -> VIEJO)\nrecentUserMsgs.reverse();\n\n// 5. VENTANA DE TIEMPO (2 MINUTOS)\nconst sessionMessages = [];\n\n// Función robusta para parsear \"YYYY-MM-DD HH:mm:ss\" o ISO\nconst parseDate = (dateStr) => {\n  if (!dateStr) return new Date();\n  const isoStr = dateStr.replace(' ', 'T');\n  const d = new Date(isoStr);\n  return isNaN(d.getTime()) ? new Date() : d;\n};\n\n// La referencia es la fecha del mensaje MÁS NUEVO\nconst newestDate = parseDate(recentUserMsgs[0].json[\"Fecha\"]);\nconst MAX_GAP_MINUTES = 2;\n\n// Coleccionamos también los row_number\nconst processedRowNumbers = [];\n\nfor (const item of recentUserMsgs) {\n  const msgDate = parseDate(item.json[\"Fecha\"]);\n  const diffMs = newestDate - msgDate;\n  const diffMinutes = diffMs / (1000 * 60);\n\n  if (diffMinutes > MAX_GAP_MINUTES) break;\n  \n  sessionMessages.push(item);\n  // Guardar ID de fila para luego marcar como procesado\n  if (item.json.row_number) processedRowNumbers.push(item.json.row_number);\n}\n\n// 6. Reordenar para lectura (VIEJO -> NUEVO)\nsessionMessages.reverse();\n\n// 7. Unir textos\nconst combinedText = sessionMessages\n  .map(i => {\n     const msg = i.json[\"Mensaje/Transcripción\"];\n     return (msg && typeof msg === 'object') ? JSON.stringify(msg) : (msg || '');\n  })\n  .filter(t => t.trim() !== \"\")\n  .join(\"\\n\");\n\n// 8. Retorno\nconst firstMsg = sessionMessages[0] || {};\nconst phone = firstMsg.json[\"WhatsApp ID\"] || \"Unknown\"; \n\nreturn [{\n  json: {\n    messages: [{\n      from: phone,\n      text: { body: combinedText },\n      type: \"text\"\n    }],\n    processed_rows: processedRowNumbers // <--- EXPORTAMOS LOS IDs\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1024,
+        848
+      ],
+      "id": "3c7beaeb-c633-4074-911c-ef020d76a034",
+      "name": "Unir Msjs"
+    },
+    {
+      "parameters": {
+        "jsCode": "const processedRows = $input.item.json.processed_rows || [];\n\nreturn processedRows.map(rowId => {\n  return {\n    json: {\n      row_number: rowId\n    }\n  };\n});"
+      },
+      "id": "e5f2a1b3-4c8d-4e9f-a2e1-b5d7e8f9a2c4",
+      "name": "Separar filas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1300,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1776,
+        864
+      ],
+      "id": "a1429853-0e2d-48af-b634-c04adccb92c5",
+      "name": "Wait3",
+      "webhookId": "39b54688-4e98-48f4-bfd3-b60a2cf60b1f"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0",
+          "mode": "list",
+          "cachedResultName": "Log Chatbot Trancorvalle",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "BD_Conversaciones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iS1nC9O7a2N0ekFB6RXPqKjvT3n8Y2HpyRwH_cbPTg0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Procesado": "ATENDIDO",
+            "row_number": "={{ $json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Procesado",
+              "displayName": "Procesado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1f2dd9f-7539-485a-97ff-4975a3679047",
+      "name": "Marcar Procesado",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -864,
+        848
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ev9yj4hLTVffsiRE",
+          "name": "Google Sheets - Trancorvalle"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Conocimiento_BD",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from PDF": {
+      "main": [
+        [
+          {
+            "node": "Prompt docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from XLS": {
+      "main": [
+        [
+          {
+            "node": "Map JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from XLSX": {
+      "main": [
+        [
+          {
+            "node": "Map JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map JSON": {
+      "main": [
+        [
+          {
+            "node": "Prompt docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map image prompt": {
+      "main": [
+        [
+          {
+            "node": "Conocimiento_BD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map text prompt": {
+      "main": [
+        [
+          {
+            "node": "Conocimiento_BD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Types": {
+      "main": [
+        [
+          {
+            "node": "Map text prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Descargar_audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Descargar_imagen",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Descargar_documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze an image": {
+      "main": [
+        [
+          {
+            "node": "Map image prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conocimiento_BD": {
+      "main": [
+        [
+          {
+            "node": "Registro_conversacion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registro_conversacion": {
+      "main": [
+        [
+          {
+            "node": "Detectar venta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detectar venta": {
+      "main": [
+        [
+          {
+            "node": "Generar Resumen Venta",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respuesta cliente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alerta comercial": {
+      "main": [
+        []
+      ]
+    },
+    "Descargar audio": {
+      "main": [
+        [
+          {
+            "node": "Transcribir audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribir audio": {
+      "main": [
+        [
+          {
+            "node": "Map text audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tipo documento": {
+      "main": [
+        [
+          {
+            "node": "Filtro tipo documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro tipo documento": {
+      "main": [
+        [
+          {
+            "node": "Prompt docs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prompt docs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prompt docs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prompt docs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prompt docs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prompt docs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Map JSON",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from XLS",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Unsupported Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Servicios transcorvalle": {
+      "ai_tool": [
+        [
+          {
+            "node": "Conocimiento_BD",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar_audio": {
+      "main": [
+        [
+          {
+            "node": "Descargar audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar_imagen": {
+      "main": [
+        [
+          {
+            "node": "Descargar img",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar_documento": {
+      "main": [
+        [
+          {
+            "node": "Descargar archivo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar img": {
+      "main": [
+        [
+          {
+            "node": "Analyze an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar archivo": {
+      "main": [
+        [
+          {
+            "node": "Tipo documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt docs": {
+      "main": [
+        [
+          {
+            "node": "Conocimiento_BD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Respuesta": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Conocimiento_BD",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map text audio": {
+      "main": [
+        [
+          {
+            "node": "Conocimiento_BD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Respuesta1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generar Resumen Venta",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generar Resumen Venta": {
+      "main": [
+        [
+          {
+            "node": "Alerta comercial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Guardar Msg Parcial",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Msg Parcial": {
+      "main": [
+        [
+          {
+            "node": "Marcar Semáforo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar Semáforo": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Semáforo": {
+      "main": [
+        [
+          {
+            "node": "Es ultimo mensaje?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es ultimo mensaje?": {
+      "main": [
+        [
+          {
+            "node": "Recuperar Msjs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recuperar Msjs": {
+      "main": [
+        [
+          {
+            "node": "Unir Msjs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unir Msjs": {
+      "main": [
+        [
+          {
+            "node": "Separar filas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Conocimiento_BD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separar filas": {
+      "main": [
+        [
+          {
+            "node": "Marcar Procesado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Verificar Semáforo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar Procesado": {
+      "main": [
+        [
+          {
+            "node": "Route Types",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "95aba3495c84c5c821463efacfb2c1711c8dd2fc31b4e66f159e580f480a5f33"
+  }
+}
